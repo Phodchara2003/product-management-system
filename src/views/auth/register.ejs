@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ลงทะเบียน - ระบบจัดการสินค้า</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#36b9cc">
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css">
+  
+  <style>
+    body {
+      background-color: #f8f9fa;
+      background-image: url('https://source.unsplash.com/random/1920x1080/?business,digital');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      min-height: 100vh;
+      padding: 40px 0;
+    }
+    
+    .register-container {
+      display: flex;
+      align-items: center;
+      min-height: calc(100vh - 80px);
+    }
+    
+    .card {
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(10px);
+      background-color: rgba(255, 255, 255, 0.9);
+      transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
+    }
+    
+    .card-header {
+      background-color: #36b9cc;
+      color: white;
+      border-radius: 10px 10px 0 0 !important;
+      padding: 1.5rem;
+    }
+    
+    .form-control {
+      border-radius: 7px;
+      padding: 12px;
+      border: 1px solid #e0e0e0;
+      transition: all 0.3s;
+    }
+    
+    .form-control:focus {
+      border-color: #36b9cc;
+      box-shadow: 0 0 0 0.25rem rgba(54, 185, 204, 0.25);
+    }
+    
+    .btn-primary {
+      background-color: #36b9cc;
+      border-color: #36b9cc;
+      padding: 12px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    
+    .btn-primary:hover {
+      background-color: #2a9aaa;
+      border-color: #2a9aaa;
+      transform: translateY(-2px);
+    }
+    
+    .alert {
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .input-group-text {
+      background-color: #f8f9fa;
+      border: 1px solid #e0e0e0;
+    }
+    
+    .card-footer {
+      background-color: transparent;
+      border-top: none;
+    }
+    
+    .register-title {
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    
+    .register-subtitle {
+      color: rgba(255, 255, 255, 0.8);
+      margin-top: -5px;
+    }
+    
+    .progress {
+      height: 6px;
+      margin-top: 8px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <div class="register-container container">
+    <div class="row justify-content-center w-100">
+      <div class="col-lg-8 col-xl-7">
+        <!-- แสดงข้อความผิดพลาดถ้ามี -->
+        <% if (locals.error) { %>
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i> <%= error %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        <% } %>
+        
+        <div class="card">
+          <div class="card-header text-center">
+            <div class="text-center mb-3">
+              <i class="fas fa-user-plus fa-3x mb-3"></i>
+            </div>
+            <h3 class="register-title">ลงทะเบียนผู้ดูแลระบบ</h3>
+            <p class="register-subtitle">กรอกข้อมูลของคุณเพื่อสร้างบัญชีใหม่</p>
+          </div>
+          <div class="card-body p-4">
+            <form action="/auth/register" method="post" id="registerForm">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="username" class="form-label">
+                    <i class="fas fa-user me-2"></i>ชื่อผู้ใช้
+                  </label>
+                  <input type="text" class="form-control" id="username" name="username" 
+                         value="<%= locals.formData ? formData.username : '' %>" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="password" class="form-label">
+                    <i class="fas fa-lock me-2"></i>รหัสผ่าน
+                  </label>
+                  <div class="input-group">
+                    <input type="password" class="form-control" id="password" name="password" required>
+                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                      <i class="far fa-eye"></i>
+                    </button>
+                  </div>
+                  <div class="progress mt-2">
+                    <div id="password-strength" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                  </div>
+                  <small id="passwordHelp" class="form-text text-muted">ใช้ตัวอักษร, ตัวเลข และอักขระพิเศษเพื่อความปลอดภัย</small>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="email" class="form-label">
+                  <i class="fas fa-envelope me-2"></i>อีเมล
+                </label>
+                <input type="email" class="form-control" id="email" name="email" 
+                       value="<%= locals.formData ? formData.email : '' %>" required>
+              </div>
+              
+              <div class="mb-3">
+                <label for="address" class="form-label">
+                  <i class="fas fa-map-marker-alt me-2"></i>ที่อยู่
+                </label>
+                <textarea class="form-control" id="address" name="address" 
+                          rows="3"><%= locals.formData ? formData.address : '' %></textarea>
+              </div>
+              
+              <div class="mb-4">
+                <label for="phone" class="form-label">
+                  <i class="fas fa-phone me-2"></i>เบอร์โทรศัพท์
+                </label>
+                <input type="tel" class="form-control" id="phone" name="phone" 
+                       value="<%= locals.formData ? formData.phone : '' %>" 
+                       placeholder="0xx-xxx-xxxx">
+              </div>
+              
+              <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-primary btn-lg">
+                  <i class="fas fa-user-plus me-2"></i>ลงทะเบียน
+                </button>
+              </div>
+            </form>
+          </div>
+          <div class="card-footer text-center py-3">
+            <p class="mb-0">มีบัญชีอยู่แล้ว? <a href="/auth/login" class="text-primary fw-bold">เข้าสู่ระบบ</a></p>
+          </div>
+        </div>
+        <div class="text-center text-white mt-3">
+          <small>&copy; <%= new Date().getFullYear() %> ระบบจัดการสินค้า</small>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // สคริปต์สำหรับแสดง/ซ่อนรหัสผ่าน
+    document.getElementById('togglePassword').addEventListener('click', function() {
+      const passwordInput = document.getElementById('password');
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      this.querySelector('i').classList.toggle('fa-eye');
+      this.querySelector('i').classList.toggle('fa-eye-slash');
+    });
+    
+    // สคริปต์สำหรับตรวจสอบความแข็งแรงของรหัสผ่าน
+    document.getElementById('password').addEventListener('input', function() {
+      const password = this.value;
+      const progressBar = document.getElementById('password-strength');
+      const passwordHelp = document.getElementById('passwordHelp');
+      
+      // กำหนดเกณฑ์ความแข็งแรงของรหัสผ่าน
+      const hasLowerCase = /[a-z]/.test(password);
+      const hasUpperCase = /[A-Z]/.test(password);
+      const hasNumber = /[0-9]/.test(password);
+      const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+      const isLongEnough = password.length >= 8;
+      
+      // คำนวณเปอร์เซ็นต์ความแข็งแรง
+      let strength = 0;
+      if (hasLowerCase) strength += 20;
+      if (hasUpperCase) strength += 20;
+      if (hasNumber) strength += 20;
+      if (hasSpecial) strength += 20;
+      if (isLongEnough) strength += 20;
+      
+      // กำหนดสีและข้อความตามความแข็งแรง
+      let color;
+      let message;
+      if (strength < 40) {
+        color = '#dc3545'; // แดง
+        message = 'รหัสผ่านอ่อนแอเกินไป';
+      } else if (strength < 70) {
+        color = '#ffc107'; // เหลือง
+        message = 'รหัสผ่านปานกลาง';
+      } else {
+        color = '#198754'; // เขียว
+        message = 'รหัสผ่านแข็งแรง';
+      }
+      
+      // แสดงผล
+      progressBar.style.width = strength + '%';
+      progressBar.style.backgroundColor = color;
+      passwordHelp.textContent = message;
+    });
+  </script>
+</body>
+</html>

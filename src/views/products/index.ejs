@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>สินค้าทั้งหมด | ระบบจัดการสินค้า</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#4e73df">
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      padding-bottom: 50px;
+    }
+    
+    .page-header {
+      background-color: #4e73df;
+      padding: 2rem 0;
+      margin-bottom: 2rem;
+      color: white;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .card {
+      border: none;
+      box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+      border-radius: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.25);
+    }
+    
+    .card-img-top {
+      height: 200px;
+      object-fit: cover;
+      border-top-left-radius: 0.5rem;
+      border-top-right-radius: 0.5rem;
+    }
+    
+    .card-title {
+      font-weight: 700;
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+    
+    .card-body {
+      padding: 1.5rem;
+    }
+    
+    .card-footer {
+      background-color: #fff;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+      border-bottom-left-radius: 0.5rem !important;
+      border-bottom-right-radius: 0.5rem !important;
+      padding: 1rem 1.5rem;
+    }
+    
+    .btn {
+      border-radius: 0.35rem;
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+    }
+    
+    .btn-primary {
+      background-color: #4e73df;
+      border-color: #4e73df;
+    }
+    
+    .btn-primary:hover {
+      background-color: #2e59d9;
+      border-color: #2653d4;
+    }
+    
+    .btn-warning {
+      background-color: #f6c23e;
+      border-color: #f6c23e;
+      color: #fff;
+    }
+    
+    .btn-warning:hover {
+      background-color: #f4b619;
+      border-color: #f4b30d;
+      color: #fff;
+    }
+    
+    .btn-danger {
+      background-color: #e74a3b;
+      border-color: #e74a3b;
+    }
+    
+    .btn-danger:hover {
+      background-color: #e02d1b;
+      border-color: #d52a1a;
+    }
+    
+    .alert {
+      border-left: 0.25rem solid;
+      border-radius: 0.35rem;
+    }
+    
+    .alert-success {
+      color: #0f6848;
+      background-color: #d1f0e4;
+      border-color: #1cc88a;
+    }
+    
+    .alert-info {
+      color: #2c6587;
+      background-color: #dff1fb;
+      border-color: #36b9cc;
+    }
+    
+    .search-container {
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .product-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 2;
+    }
+    
+    .product-price {
+      color: #e74a3b;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    
+    .product-stock {
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+    }
+    
+    .stock-high {
+      color: #1cc88a;
+    }
+    
+    .stock-medium {
+      color: #f6c23e;
+    }
+    
+    .stock-low {
+      color: #e74a3b;
+    }
+    
+    .product-code {
+      color: #858796;
+      font-size: 0.875rem;
+    }
+    
+    .stats-card {
+      border-left: 0.25rem solid;
+      margin-bottom: 1.5rem;
+    }
+    
+    .stats-card-product {
+      border-color: #4e73df;
+    }
+    
+    .stats-card-value {
+      border-color: #1cc88a;
+    }
+    
+    .stats-card-quantity {
+      border-color: #f6c23e;
+    }
+    
+    .stats-header {
+      color: #5a5c69;
+      font-weight: 700;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+    }
+    
+    .stats-value {
+      color: #5a5c69;
+      font-weight: 700;
+      font-size: 1.5rem;
+      margin-bottom: 0;
+    }
+    
+    .animate__animated {
+      animation-duration: 0.8s;
+    }
+    
+    .pagination {
+      margin-top: 2rem;
+    }
+    
+    .pagination .page-link {
+      border: none;
+      color: #4e73df;
+      padding: 0.75rem 1rem;
+    }
+    
+    .pagination .page-item.active .page-link {
+      background-color: #4e73df;
+      color: white;
+    }
+    
+    .no-products-container {
+      text-align: center;
+      padding: 4rem 0;
+    }
+    
+    .no-products-icon {
+      font-size: 5rem;
+      color: #dddfeb;
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <h1><i class="fas fa-boxes me-2"></i>สินค้าทั้งหมด</h1>
+          <p class="text-white-50">จัดการรายการสินค้าในระบบ</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <a href="/products/add" class="btn btn-light btn-lg">
+            <i class="fas fa-plus me-2"></i>เพิ่มสินค้าใหม่
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- แสดงข้อความแจ้งเตือน -->
+    <% if (locals.flashMessage) { %>
+      <div class="alert alert-success alert-dismissible fade show animate__animated animate__fadeIn" role="alert">
+        <i class="fas fa-check-circle me-2"></i> <%= flashMessage %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% } %>
+    
+    <!-- Dashboard Stats -->
+    <div class="row mb-4">
+      <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card stats-card stats-card-product h-100 py-3">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="stats-header mb-1">จำนวนสินค้าทั้งหมด</div>
+                <div class="stats-value"><%= products ? products.length : 0 %> รายการ</div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card stats-card stats-card-value h-100 py-3">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="stats-header mb-1">มูลค่าสินค้ารวม</div>
+                <!-- Total product value calculation -->
+                <div class="stats-value">
+                  <%= products && products.length > 0 ? 
+                    new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB' })
+                      .format(products.reduce((sum, product) => 
+                        sum + (parseFloat(product.price) * parseInt(product.quantity)), 0))
+                    : '฿0.00' %>
+                </div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card stats-card stats-card-quantity h-100 py-3">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="stats-header mb-1">จำนวนชิ้นสินค้ารวม</div>
+                <!-- Total product quantity calculation -->
+                <div class="stats-value">
+                  <%= products && products.length > 0 ? 
+                    products.reduce((sum, product) => sum + parseInt(product.quantity), 0).toLocaleString('th-TH') 
+                    : '0' %> ชิ้น
+                </div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-boxes fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Search and Filter Section -->
+    <div class="search-container mb-4 animate__animated animate__fadeIn">
+      <div class="row">
+        <div class="col-md-8 mb-3 mb-md-0">
+          <form action="/products/search" method="get" class="d-flex">
+            <div class="input-group">
+              <span class="input-group-text bg-white border-end-0">
+                <i class="fas fa-search text-gray-300"></i>
+              </span>
+              <input type="text" name="query" class="form-control border-start-0" 
+                     placeholder="ค้นหาตามชื่อหรือรหัสสินค้า..." 
+                     value="<%= locals.query ? query : '' %>">
+              <button type="submit" class="btn btn-primary">ค้นหา</button>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-4">
+          <div class="d-flex justify-content-md-end">
+            <select class="form-select me-2" id="sortProducts">
+              <option value="name-asc">เรียงตามชื่อ A-Z</option>
+              <option value="name-desc">เรียงตามชื่อ Z-A</option>
+              <option value="price-asc">ราคาน้อยไปมาก</option>
+              <option value="price-desc">ราคามากไปน้อย</option>
+              <option value="quantity-asc">สินค้าคงเหลือน้อยสุด</option>
+              <option value="quantity-desc">สินค้าคงเหลือมากสุด</option>
+            </select>
+            <button class="btn btn-outline-secondary" id="toggleView">
+              <i class="fas fa-th-list"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <% if (products && products.length > 0) { %>
+      <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4" id="productsGrid">
+        <% products.forEach(product => { %>
+          <div class="col animate__animated animate__fadeIn">
+            <div class="card h-100">
+              <!-- Badge for low stock -->
+              <% if (product.quantity <= 5) { %>
+                <span class="badge bg-danger product-badge">สินค้าเหลือน้อย</span>
+              <% } %>
+              
+              <div class="position-relative">
+                <% if (product.image) { %>
+                  <img src="/uploads/<%= product.image %>" class="card-img-top" 
+                       alt="<%= product.name %>" 
+                       onerror="this.onerror=null; this.src='/images/default-product.jpg';">
+                <% } else { %>
+                  <img src="/images/default-product.jpg" class="card-img-top" alt="รูปสินค้าเริ่มต้น">
+                <% } %>
+              </div>
+              
+              <div class="card-body">
+                <div class="product-code mb-2">
+                  <span class="badge bg-light text-dark">
+                    <i class="fas fa-barcode me-1"></i> <%= product.code %>
+                  </span>
+                </div>
+                <h5 class="card-title"><%= product.name %></h5>
+                <div class="product-price mb-2">
+                  <%= new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB' }).format(product.price) %>
+                </div>
+                
+                <div class="product-stock">
+                  <i class="fas fa-cubes me-2 
+                    <%= product.quantity > 20 ? 'stock-high' : 
+                      (product.quantity > 5 ? 'stock-medium' : 'stock-low') %>"></i>
+                  คงเหลือ: <%= product.quantity.toLocaleString('th-TH') %> ชิ้น
+                </div>
+              </div>
+              
+              <div class="card-footer">
+                <div class="d-flex justify-content-between">
+                  <a href="/products/edit/<%= product.id %>" class="btn btn-warning">
+                    <i class="fas fa-edit me-1"></i> แก้ไข
+                  </a>
+                  <form action="/products/delete/<%= product.id %>" method="post" 
+                        onsubmit="return confirm('คุณต้องการลบสินค้า <%= product.name %> นี้หรือไม่?');">
+                    <button type="submit" class="btn btn-danger">
+                      <i class="fas fa-trash-alt me-1"></i> ลบ
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+      
+      <!-- Table View (เริ่มต้นให้ซ่อนไว้) -->
+      <div class="card mb-4 animate__animated animate__fadeIn" id="productsTable" style="display: none;">
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle mb-0">
+              <thead class="bg-light">
+                <tr>
+                  <th>รูป</th>
+                  <th>รหัส</th>
+                  <th>ชื่อสินค้า</th>
+                  <th>ราคา</th>
+                  <th>คงเหลือ</th>
+                  <th>จัดการ</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% products.forEach(product => { %>
+                  <tr>
+                    <td style="width: 80px;">
+                      <% if (product.image) { %>
+                        <img src="/uploads/<%= product.image %>" class="img-thumbnail" 
+                             style="width: 60px; height: 60px; object-fit: cover;" 
+                             alt="<%= product.name %>"
+                             onerror="this.onerror=null; this.src='/images/default-product.jpg';">
+                      <% } else { %>
+                        <img src="/images/default-product.jpg" class="img-thumbnail" 
+                             style="width: 60px; height: 60px; object-fit: cover;" 
+                             alt="รูปสินค้าเริ่มต้น">
+                      <% } %>
+                    </td>
+                    <td><span class="badge bg-light text-dark"><%= product.code %></span></td>
+                    <td><strong><%= product.name %></strong></td>
+                    <td><%= new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB' }).format(product.price) %></td>
+                    <td>
+                      <span class="badge 
+                        <%= product.quantity > 20 ? 'bg-success' : 
+                          (product.quantity > 5 ? 'bg-warning' : 'bg-danger') %>">
+                        <%= product.quantity.toLocaleString('th-TH') %> ชิ้น
+                      </span>
+                    </td>
+                    <td>
+                      <div class="btn-group btn-group-sm" role="group">
+                        <a href="/products/edit/<%= product.id %>" class="btn btn-warning">
+                          <i class="fas fa-edit"></i>
+                        </a>
+                        <form action="/products/delete/<%= product.id %>" method="post" 
+                              onsubmit="return confirm('คุณต้องการลบสินค้า <%= product.name %> นี้หรือไม่?');" 
+                              style="display: inline;">
+                          <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash-alt"></i>
+                          </button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Pagination -->
+      <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+          <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1">ก่อนหน้า</a>
+          </li>
+          <li class="page-item active"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item">
+            <a class="page-link" href="#">ถัดไป</a>
+          </li>
+        </ul>
+      </nav>
+      
+    <% } else { %>
+      <!-- No Products Found -->
+      <div class="card no-products-container animate__animated animate__fadeIn">
+        <div class="card-body text-center">
+          <i class="fas fa-box-open no-products-icon"></i>
+          <h3>ไม่พบสินค้า</h3>
+          <p class="text-muted">ยังไม่มีสินค้าในระบบ กรุณาเพิ่มสินค้าใหม่</p>
+          <a href="/products/add" class="btn btn-primary btn-lg mt-3">
+            <i class="fas fa-plus me-2"></i>เพิ่มสินค้าใหม่
+          </a>
+        </div>
+      </div>
+    <% } %>
+  </div>
+
+  <%- include('../partials/footer') %>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // สคริปต์สลับการแสดงผลระหว่างกริดและตาราง
+    document.addEventListener('DOMContentLoaded', function() {
+      const toggleViewBtn = document.getElementById('toggleView');
+      const productsGrid = document.getElementById('productsGrid');
+      const productsTable = document.getElementById('productsTable');
+      let viewMode = 'grid'; // เริ่มต้นเป็นแบบกริด
+      
+      toggleViewBtn.addEventListener('click', function() {
+        if (viewMode === 'grid') {
+          productsGrid.style.display = 'none';
+          productsTable.style.display = 'block';
+          toggleViewBtn.innerHTML = '<i class="fas fa-th"></i>';
+          viewMode = 'table';
+        } else {
+          productsGrid.style.display = 'flex';
+          productsTable.style.display = 'none';
+          toggleViewBtn.innerHTML = '<i class="fas fa-th-list"></i>';
+          viewMode = 'grid';
+        }
+      });
+      
+      // เรียงลำดับสินค้า
+      const sortSelect = document.getElementById('sortProducts');
+      sortSelect.addEventListener('change', function() {
+        const products = Array.from(document.querySelectorAll('#productsGrid .col'));
+        const sortValue = this.value;
+        
+        products.sort((a, b) => {
+          let valueA, valueB;
+          
+          if (sortValue.startsWith('name')) {
+            valueA = a.querySelector('.card-title').textContent.trim().toLowerCase();
+            valueB = b.querySelector('.card-title').textContent.trim().toLowerCase();
+          } else if (sortValue.startsWith('price')) {
+            valueA = parseFloat(a.querySelector('.product-price').textContent.replace(/[^\d.-]/g, ''));
+            valueB = parseFloat(b.querySelector('.product-price').textContent.replace(/[^\d.-]/g, ''));
+          } else if (sortValue.startsWith('quantity')) {
+            valueA = parseInt(a.querySelector('.product-stock').textContent.match(/\d+/)[0]);
+            valueB = parseInt(b.querySelector('.product-stock').textContent.match(/\d+/)[0]);
+          }
+          
+          if (sortValue.endsWith('-asc')) {
+            return valueA > valueB ? 1 : -1;
+          } else {
+            return valueA < valueB ? 1 : -1;
+          }
+        });
+        
+        const productsContainer = document.getElementById('productsGrid');
+        products.forEach(product => productsContainer.appendChild(product));
+        
+        // จัดการกับการเรียงลำดับใน table view ด้วย
+        const tableRows = Array.from(document.querySelectorAll('#productsTable tbody tr'));
+        
+        tableRows.sort((a, b) => {
+          let valueA, valueB;
+          const cells = a.querySelectorAll('td');
+          const cellsB = b.querySelectorAll('td');
+          
+          if (sortValue.startsWith('name')) {
+            valueA = cells[2].textContent.trim().toLowerCase();
+            valueB = cellsB[2].textContent.trim().toLowerCase();
+          } else if (sortValue.startsWith('price')) {
+            valueA = parseFloat(cells[3].textContent.replace(/[^\d.-]/g, ''));
+            valueB = parseFloat(cellsB[3].textContent.replace(/[^\d.-]/g, ''));
+          } else if (sortValue.startsWith('quantity')) {
+            valueA = parseInt(cells[4].textContent.match(/\d+/)[0]);
+            valueB = parseInt(cellsB[4].textContent.match(/\d+/)[0]);
+          }
+          
+          if (sortValue.endsWith('-asc')) {
+            return valueA > valueB ? 1 : -1;
+          } else {
+            return valueA < valueB ? 1 : -1;
+          }
+        });
+        
+        const tableBody = document.querySelector('#productsTable tbody');
+        tableRows.forEach(row => tableBody.appendChild(row));
+      });
+      
+      // รีเฟรชหน้าเมื่อกลับมาจากหน้าอื่น
+      if (performance.navigation.type === 2) {
+        window.location.reload();
+      }
+    });
+  </script>
+</body>
+</html>
